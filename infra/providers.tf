@@ -15,14 +15,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = ">=3.40.0"
-    }
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
-      version = ">= 2.4"
-    }
-    helm = {
-      source = "hashicorp/helm"
+      version = "=3.40.0"
     }
     random = {
       source = "hashicorp/random"
@@ -33,9 +26,9 @@ terraform {
   }
 
   backend "azurerm" {
-    resource_group_name  = "gordocore"
-    storage_account_name = "corestore00"
-    container_name       = "terraformstate"
-    key                  = "openhack-azure.tfstate"
+    resource_group_name  = "coreservices"
+    storage_account_name = "corestore000"
+    container_name       = "terraform"
+    key                  = "ml-labs-azure.tfstate"
   }
 }
