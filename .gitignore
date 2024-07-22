@@ -294,6 +294,7 @@ dist
 ### Terraform ###
 # Local .terraform directories
 **/.terraform/*
+*.terraform.lock.*
 
 # .tfstate files
 *.tfstate
