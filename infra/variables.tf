@@ -19,7 +19,7 @@ variable "location" {
 variable "prefix" {
   type        = string
   description = "Prefix for naming"
-  default     = "unicorn"
+  default     = "djd"
 }
 variable "vnet_address_space" {
   type        = list(string)
@@ -33,10 +33,10 @@ variable "training_subnet_address_space" {
   default     = ["10.0.1.0/24"]
 }
 
-variable "aks_subnet_address_space" {
+variable "openai_subnet_address_space" {
   type        = list(string)
-  description = "Address space of the aks subnet"
-  default     = ["10.0.2.0/23"]
+  description = "Address space of the openai subnet"
+  default     = ["10.0.2.0/24"]
 }
 
 variable "ml_subnet_address_space" {
@@ -78,4 +78,35 @@ variable "dsvm_host_password" {
   type        = string
   description = "Password for the admin username of the Data Science VM"
   sensitive   = true
+  default     = "willBeGenerated"
+}
+
+variable "openai_deployments" {
+  description = "(Optional) Specifies the deployments of the Azure OpenAI Service"
+  type = list(object({
+    name = string
+    model = object({
+      name    = string
+      version = string
+    })
+    rai_policy_name = string
+  }))
+  default = [
+    # {
+    #   name = "openai-gpt35turbo"
+    #   model = {
+    #     name = "gpt-35-turbo"
+    #     version = "0301"
+    #   }
+    #   rai_policy_name = ""
+    # },
+    {
+      name = "openai-gpt4o"
+      model = {
+        name    = "gpt-4o"
+        version = "2024-05-13"
+      }
+      rai_policy_name = ""
+    }
+  ]
 }
