@@ -1,6 +1,8 @@
 import fs from 'fs';
 import unzipper from 'unzipper';
 import { Octokit } from '@octokit/core';
+import { Readable } from 'stream'; // Import Readable from 'stream'
+
 
 const token = process.env.GITHUB_TOKEN;
 const [owner, repo] = process.env.GITHUB_REPOSITORY.split('/');
@@ -30,7 +32,7 @@ async function main() {
       const workflows = await octokit.request('GET /repos/{owner}/{repo}/actions/workflows/{workflow_id}/runs', {
         owner,
         repo,
-        workflow_id: 'plan.yml', // Replace with your actual workflow file name
+        workflow_id: 'tf-plan.yml', // Use your actual workflow file name
         event: 'workflow_dispatch',
         status: 'success',
       });
@@ -62,24 +64,19 @@ async function main() {
     repo,
     artifact_id: artifact.id,
     archive_format: 'zip',
-    headers: {
-      Accept: 'application/vnd.github+json',
-    },
   });
 
-  const response = await fetch(download.url, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      Accept: 'application/vnd.github+json',
-    },
-  });
+  const response = await fetch(download.url);
 
   if (!response.ok) {
     throw new Error(`Failed to download artifact: ${response.statusText}`);
   }
 
+  // Convert Web ReadableStream to Node.js Readable Stream
+  const nodeStream = Readable.fromWeb(response.body);
+
   await new Promise((resolve, reject) => {
-    response.body
+    nodeStream
       .pipe(unzipper.Extract({ path: './infra' }))
       .on('close', resolve)
       .on('error', reject);
