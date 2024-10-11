@@ -62,17 +62,10 @@ async function main() {
     repo,
     artifact_id: artifact.id,
     archive_format: 'zip',
-    headers: {
-      Accept: 'application/vnd.github+json',
-    },
   });
 
-  const response = await fetch(download.url, {
-    headers: {
-      Authorization: `token ${token}`, // Use 'token' instead of 'Bearer'
-      Accept: 'application/vnd.github+json',
-    },
-  });
+  // Remove the Authorization header when fetching the download URL
+  const response = await fetch(download.url);
 
   if (!response.ok) {
     throw new Error(`Failed to download artifact: ${response.statusText}`);
