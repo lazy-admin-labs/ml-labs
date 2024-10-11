@@ -39,7 +39,7 @@ jobs:
           node-version: '20'
 
       - name: Install Dependencies
-        run: npm install unzipper
+        run: npm install @octokit/core unzipper
 
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
@@ -53,7 +53,7 @@ jobs:
 
       - name: Download and Extract Plan Artifact
         run: node download-artifact.js
-        
+
       - name: Terraform Init
         working-directory: ./infra
         run: terraform init
