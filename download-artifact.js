@@ -30,7 +30,7 @@ async function main() {
       const workflows = await octokit.request('GET /repos/{owner}/{repo}/actions/workflows/{workflow_id}/runs', {
         owner,
         repo,
-        workflow_id: 'plan.yml', // Replace with your actual workflow file name
+        workflow_id: 'tf-plan.yml', // Replace with your actual workflow file name
         event: 'workflow_dispatch',
         status: 'success',
       });
