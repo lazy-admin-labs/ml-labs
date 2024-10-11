@@ -33,6 +33,14 @@ jobs:
         with:
           fetch-depth: 2
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install Dependencies
+        run: npm install @octokit/core unzipper
+
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
         with:
@@ -43,72 +51,8 @@ jobs:
         with:
           creds: '{"clientId":"${{ secrets.ARM_CLIENT_ID }}","clientSecret":"${{ secrets.ARM_CLIENT_SECRET }}","subscriptionId":"${{ secrets.ARM_SUBSCRIPTION_ID }}","tenantId":"${{ secrets.ARM_TENANT_ID }}"}'
 
-      - name: Download Plan Artifact
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const run_id = github.event_name === 'workflow_run' ? github.event.workflow_run.id : undefined;
-
-            async function findArtifact() {
-              if (run_id) {
-                // If triggered by workflow_run, get artifacts from the triggering run
-                const artifacts = await github.rest.actions.listWorkflowRunArtifacts({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  run_id: run_id,
-                });
-                return artifacts.data.artifacts.find(a => a.name === 'terraform-plan');
-              } else {
-                // If triggered manually, get the latest successful run of the plan workflow
-                const workflows = await github.rest.actions.listWorkflowRuns({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  workflow_id: 'Terraform Plan',
-                  event: 'workflow_dispatch',
-                  status: 'success',
-                });
-                for (const run of workflows.data.workflow_runs) {
-                  const artifacts = await github.rest.actions.listWorkflowRunArtifacts({
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    run_id: run.id,
-                  });
-                  const artifact = artifacts.data.artifacts.find(a => a.name === 'terraform-plan');
-                  if (artifact) {
-                    return artifact;
-                  }
-                }
-              }
-              return null;
-            }
-
-            const artifact = await findArtifact();
-            if (!artifact) {
-              throw new Error('Artifact not found');
-            }
-
-            const download = await github.rest.actions.downloadArtifact({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              artifact_id: artifact.id,
-              archive_format: 'zip',
-            });
-
-            const fs = require('fs');
-            const path = require('path');
-            const unzipper = require('unzipper');
-            const res = await fetch(download.url, {
-              headers: {
-                Authorization: `token ${{ secrets.GITHUB_TOKEN }}`,
-                Accept: 'application/vnd.github.v3+json',
-              },
-            });
-            await new Promise((resolve, reject) => {
-              res.body.pipe(unzipper.Extract({ path: './infra' }))
-                .on('close', resolve)
-                .on('error', reject);
-            });
-            console.log('Artifact downloaded and extracted to ./infra');
+      - name: Download and Extract Plan Artifact
+        run: node download-artifact.js
 
       - name: Terraform Init
         working-directory: ./infra
