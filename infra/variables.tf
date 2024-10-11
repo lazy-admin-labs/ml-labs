@@ -62,7 +62,7 @@ variable "image_build_compute_name" {
   default     = "image-builder"
 }
 
-# DSVM Variables
+#region DSVM Variables
 variable "dsvm_name" {
   type        = string
   description = "Name of the Data Science VM"
@@ -80,7 +80,8 @@ variable "dsvm_host_password" {
   sensitive   = true
   default     = "willBeGenerated"
 }
-
+#endregion
+#region Openai Deployments
 variable "openai_deployments" {
   description = "(Optional) Specifies the deployments of the Azure OpenAI Service"
   type = list(object({
@@ -110,3 +111,4 @@ variable "openai_deployments" {
     }
   ]
 }
+#endregion
