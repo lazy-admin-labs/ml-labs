@@ -1,6 +1,7 @@
 import fs from 'fs';
 import unzipper from 'unzipper';
 import { Octokit } from '@octokit/core';
+import { Readable } from 'stream'; // Import Readable from 'stream'
 
 const token = process.env.GITHUB_TOKEN;
 const [owner, repo] = process.env.GITHUB_REPOSITORY.split('/');
@@ -64,15 +65,17 @@ async function main() {
     archive_format: 'zip',
   });
 
-  // Remove the Authorization header when fetching the download URL
   const response = await fetch(download.url);
 
   if (!response.ok) {
     throw new Error(`Failed to download artifact: ${response.statusText}`);
   }
 
+  // Convert Web ReadableStream to Node.js Readable Stream
+  const nodeStream = Readable.fromWeb(response.body);
+
   await new Promise((resolve, reject) => {
-    response.body
+    nodeStream
       .pipe(unzipper.Extract({ path: './infra' }))
       .on('close', resolve)
       .on('error', reject);
