@@ -57,15 +57,15 @@ jobs:
       - name: Terraform Plan
         id: plan
         working-directory: ./infra
-        run: terraform plan -out=tfplan
+        run: terraform plan -out=ailabs.tfplan
 
-      - name: Terraform Apply
+      - name: Terraform Apply (only when a pr is done to main)
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         working-directory: ./infra
-        run: terraform apply -auto-approve tfplan
+        run: terraform apply -auto-approve ailabs.tfplan
 
       - name: Save Terraform State
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: terraform-state
-          path: ./infra/.terraform/
+          path: ./infra/ailabs.tfplan
