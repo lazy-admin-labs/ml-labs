@@ -1,15 +1,11 @@
-# .github/workflows/deploy.yml
-name: Terraform Deploy
+name: Terraform Plan
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
 
 jobs:
-  terraform-deploy:
-    name: "Terraform Init and Apply"
+  terraform-plan:
+    name: "Terraform Plan"
     runs-on: ubuntu-latest
 
     env:
@@ -42,14 +38,6 @@ jobs:
         working-directory: ./infra
         run: terraform fmt -check
 
-      # - name: Install TFLint
-      #   run: |
-      #     curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
-
-      # - name: Run TFLint
-      #   working-directory: ./infra
-      #   run: tflint
-
       - name: Terraform Validate
         working-directory: ./infra
         run: terraform validate
@@ -59,13 +47,8 @@ jobs:
         working-directory: ./infra
         run: terraform plan -out=ailabs.tfplan
 
-      - name: Terraform Apply (only when a pr is done to main)
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        working-directory: ./infra
-        run: terraform apply -auto-approve ailabs.tfplan
-
-      - name: Save Terraform State
+      - name: Upload Plan Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: terraform-state
+          name: terraform-plan
           path: ./infra/ailabs.tfplan
