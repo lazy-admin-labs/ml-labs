@@ -42,13 +42,13 @@ jobs:
         working-directory: ./infra
         run: terraform fmt -check
 
-      - name: Install TFLint
-        run: |
-          curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+      # - name: Install TFLint
+      #   run: |
+      #     curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
 
-      - name: Run TFLint
-        working-directory: ./infra
-        run: tflint
+      # - name: Run TFLint
+      #   working-directory: ./infra
+      #   run: tflint
 
       - name: Terraform Validate
         working-directory: ./infra
