@@ -63,7 +63,7 @@ jobs:
                 const workflows = await github.rest.actions.listWorkflowRuns({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
-                  workflow_id: 'Terraform Plan',
+                  workflow_id: 'tf-plan.yml',
                   event: 'workflow_dispatch',
                   status: 'success',
                 });
