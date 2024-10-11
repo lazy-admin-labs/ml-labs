@@ -28,11 +28,11 @@ jobs:
           terraform_version: '1.9.6' # Update to your desired version
 
       - name: Terraform Init
-        working-directory: ./terraform
+        working-directory: ./infra
         run: terraform init
 
       - name: Terraform Format
-        working-directory: ./terraform
+        working-directory: ./infra
         run: terraform fmt -check
 
       - name: Install TFLint
@@ -40,25 +40,25 @@ jobs:
           curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
 
       - name: Run TFLint
-        working-directory: ./terraform
+        working-directory: ./infra
         run: tflint
 
       - name: Terraform Validate
-        working-directory: ./terraform
+        working-directory: ./infra
         run: terraform validate
 
       - name: Terraform Plan
         id: plan
-        working-directory: ./terraform
+        working-directory: ./infra
         run: terraform plan -out=tfplan
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        working-directory: ./terraform
+        working-directory: ./infra
         run: terraform apply -auto-approve tfplan
 
       - name: Save Terraform State
         uses: actions/upload-artifact@v3
         with:
           name: terraform-state
-          path: ./terraform/.terraform/
+          path: ./infra/.terraform/
