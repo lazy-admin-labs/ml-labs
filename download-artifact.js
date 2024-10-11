@@ -1,6 +1,6 @@
-const fs = require('fs');
-const unzipper = require('unzipper');
-const { Octokit } = require("@octokit/core");
+import fs from 'fs';
+import unzipper from 'unzipper';
+import { Octokit } from '@octokit/core';
 
 const token = process.env.GITHUB_TOKEN;
 const [owner, repo] = process.env.GITHUB_REPOSITORY.split('/');
