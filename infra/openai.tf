@@ -1,5 +1,5 @@
 resource "azurerm_cognitive_account" "openai" {
-  name                = "oai${var.prefix}${random_integer.suffix.id}"
+  name                = "oai${var.prefix}${var.environment}${var.name}${random_integer.suffix.id}"
   location            = azurerm_resource_group.lazyml.location
   resource_group_name = azurerm_resource_group.lazyml.name
   kind                = "OpenAI"
@@ -14,7 +14,7 @@ resource "azurerm_cognitive_account" "openai" {
       tags
     ]
   }
-  depends_on = [azurerm_resource_group.lazyml, azurerm_key_vault.lazyml, module.vnet]
+  depends_on = [azurerm_resource_group.lazyml, azurerm_key_vault.general_use, module.vnet]
 }
 
 resource "azurerm_cognitive_deployment" "deployment" {

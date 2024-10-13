@@ -1,7 +1,8 @@
+#region Common
 variable "name" {
   type        = string
   description = "Name of the deployment"
-  default     = "lazyml"
+  default     = "lzb"
 }
 
 variable "environment" {
@@ -19,8 +20,11 @@ variable "location" {
 variable "prefix" {
   type        = string
   description = "Prefix for naming"
-  default     = "djd"
+  default     = "ai"
 }
+#endregion
+
+#region Networking
 variable "vnet_address_space" {
   type        = list(string)
   description = "Address space of the virtual network"
@@ -44,43 +48,14 @@ variable "ml_subnet_address_space" {
   description = "Address space of the ML workspace subnet"
   default     = ["10.0.3.0/24"]
 }
-variable "dsvm_subnet_address_space" {
-  type        = list(string)
-  description = "Address space of the DSVM subnet"
-  default     = ["10.0.4.0/24"]
-}
 
-variable "bastion_subnet_address_space" {
-  type        = list(string)
-  description = "Address space of the bastion subnet"
-  default     = ["10.0.5.0/24"]
-}
-
-variable "image_build_compute_name" {
-  type        = string
-  description = "Name of the compute cluster to be created and set to build docker images"
-  default     = "image-builder"
-}
-
-#region DSVM Variables
-variable "dsvm_name" {
-  type        = string
-  description = "Name of the Data Science VM"
-  default     = "vmdsvm01"
-}
-variable "dsvm_admin_username" {
-  type        = string
-  description = "Admin username of the Data Science VM"
-  default     = "azureadmin"
-}
-
-variable "dsvm_host_password" {
-  type        = string
-  description = "Password for the admin username of the Data Science VM"
-  sensitive   = true
-  default     = "willBeGenerated"
+variable "dns_zone_id" {
+  type = string
+  description = "Azure DNSZone to use"
+  default = "/subscriptions/fa626e61-2056-42b0-847a-1aad6fa3b5dd/resourceGroups/coreservices/providers/Microsoft.Network/dnszones/labs.lazyadmins.dev"
 }
 #endregion
+
 #region Openai Deployments
 variable "openai_deployments" {
   description = "(Optional) Specifies the deployments of the Azure OpenAI Service"

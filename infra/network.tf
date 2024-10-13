@@ -19,5 +19,5 @@ module "vnet" {
   }
   virtual_network_address_space = var.vnet_address_space
   virtual_network_location      = var.location
-  virtual_network_name          = "vnet${var.prefix}${random_integer.suffix.id}"
+  virtual_network_name          = "vnet${var.prefix}${var.environment}${var.name}${random_integer.suffix.id}"
 }
