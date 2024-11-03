@@ -9,7 +9,7 @@ module "vnet" {
       service_endpoints = ["Microsoft.CognitiveServices"]
     }
     ml = {
-      address_prefixes  = var.ml_subnet_address_space
+      address_prefixes  = var.genres_subnet_address_space
       service_endpoints = ["Microsoft.CognitiveServices"]
     }
     openai = {

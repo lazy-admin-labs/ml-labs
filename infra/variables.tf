@@ -43,7 +43,7 @@ variable "openai_subnet_address_space" {
   default     = ["10.0.2.0/24"]
 }
 
-variable "ml_subnet_address_space" {
+variable "genres_subnet_address_space" {
   type        = list(string)
   description = "Address space of the ML workspace subnet"
   default     = ["10.0.3.0/24"]
